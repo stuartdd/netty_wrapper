@@ -39,11 +39,26 @@ git clone https://github.com/stuartdd/netty_wrapper
 
 * Build using the provided gradle build scripts. The resulting JAR is complete with ALL dependencies built in.
 
-```bash
-cd netty_wrapper
-./
 ```
-* Create your project ad add the JAR as a dependency.
+cd netty_wrapper
+./gradlew clean fatjar
+```
+```
+cd netty_wrapper
+gradlew.bat clean fatjar
+```
+
+The resulting JAR is **netty_wrapper/build/libs/serverJarWithDependencies-1.0.jar**
+
+## Test
+Ther are test defined for the server. To run these 
+
+```
+cd netty_wrapper
+./gradlew clean test
+```
+
+* Create your project and add the JAR as a dependency.
 # Examples
 Examples are in the **server/src/main/java/examples**
 ## Minimal Example
