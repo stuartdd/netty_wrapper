@@ -1,0 +1,31 @@
+
+apply plugin: 'java'
+
+version = '1.0'
+sourceCompatibility = '1.8'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'main.Main'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.16.Final'
+    testCompile group: 'junit', name: 'junit', version: '4.10'
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Netty Server Wrapper',
+        	'Implementation-Version': version
+    }
+    baseName = project.name + 'JarWithDependencies' 
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
