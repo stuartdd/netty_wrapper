@@ -61,7 +61,7 @@ import java.util.*;
  * file_005_1.txt is also there. Template template = new Template("templates",
  * "file_005.txt");
  *
- *       // Simple Object/String sibstitution data.put("name", "Stuart Davies"); //
+ *       // Simple Object/String sibstitution data.put("name", "Fred Bloggs"); //
  * Simple String based substitution. Replace %{name} data.put("date", new
  * Date((long)1234567894)); // Substitute via the toString() method. Replace
  * %{date} data.put("num", 12345); // Java wraps the number value obtained via
@@ -84,7 +84,7 @@ import java.util.*;
  * <
  * pre>
  * <code><b>
- * Name value = Stuart Davies Date = Thu Jan 15 07:56:07 GMT 1970 Num = 12345
+ * Name value = Fred Bloggs Date = Thu Jan 15 07:56:07 GMT 1970 Num = 12345
  * Java Vendor String = Sun Microsystems Inc.. Note this is not provided via the
  * data object. --- Now the multiple lines Line 1 of 5 : Some text from line 01.
  * Note an EOL is at the end of this file Line 2 of 5 : Some text from line 11.
@@ -174,8 +174,7 @@ import java.util.*;
  * <b>listData</b> - eg: %{listData} Will list ALL data in the HashMap passed to
  * the parse method<br/>
  *
- * @author - Stuart Davies Davies (802996013)
- * @version $Rev: $ $Date: $
+ * @author - Stuartdd
  */
 public class Template {
 
