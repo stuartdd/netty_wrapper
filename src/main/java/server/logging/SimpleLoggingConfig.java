@@ -1,9 +1,6 @@
 package server.logging;
 
 import interfaces.LoggerConfig;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  *
  * @author stuartdd
@@ -11,7 +8,8 @@ import java.util.Date;
 public class SimpleLoggingConfig implements LoggerConfig {
 
     private String logFileName = "nettyServer_%{ts}.log";
-    private String timeStamp = "yyyy_MM_dd_HH_mm_ss";
+    private String timeStampFileName = "yyyy_MM_dd";
+    private String timeStampLogLine = "yyyy_MM_dd HH_mm_ss";
     private boolean echoToConsole = false;
 
     public String getLogFileName() {
@@ -22,13 +20,20 @@ public class SimpleLoggingConfig implements LoggerConfig {
         this.logFileName = logFileName;
     }
 
-
-    public String getTimeStamp() {
-        return timeStamp;
+    public String getTimeStampFileName() {
+        return timeStampFileName;
     }
 
-    public void setTimeStamp(String timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setTimeStampFileName(String timeStampFileName) {
+        this.timeStampFileName = timeStampFileName;
+    }
+
+    public String getTimeStampLogLine() {
+        return timeStampLogLine;
+    }
+
+    public void setTimeStampLogLine(String timeStampLogLine) {
+        this.timeStampLogLine = timeStampLogLine;
     }
 
     @Override
@@ -38,9 +43,5 @@ public class SimpleLoggingConfig implements LoggerConfig {
 
     public void setEchoToConsole(boolean echoToConsole) {
         this.echoToConsole = echoToConsole;
-    }
-
-    public String timeStampFormattedAsString() {
-        return (new SimpleDateFormat(getTimeStamp())).format(new Date());
     }
 }

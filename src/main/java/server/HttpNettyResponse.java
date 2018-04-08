@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
+import templating.Template;
 
 
 /**
@@ -71,7 +72,7 @@ public class HttpNettyResponse {
             throw new ServerGeneralException(HttpResponseStatus.EXPECTATION_FAILED, "Resource '" + file + "' could not be loaded", ex);
         }
         if ((MimeTypes.isTextType(contentType)) && (parameters != null)) {
-            buffer.append(new String(byteBuffer, Charset.defaultCharset()));
+            buffer.append(Template.parse(new String(byteBuffer, Charset.defaultCharset()), parameters));
             byteBuffer = null;
         }
         setComplete();

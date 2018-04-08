@@ -8,6 +8,8 @@ import java.nio.charset.Charset;
 import interfaces.Logger;
 import interfaces.LoggerConfig;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -32,7 +34,8 @@ public class SimpleLoggerImpl implements Logger {
         finalFileName = loggerConfig.getLogFileName();
         int pos = finalFileName.indexOf(TIME_STAMP_TAG);
         if (pos >= 0) {
-            finalFileName = finalFileName.substring(0, pos) + loggerConfig.timeStampFormattedAsString() + finalFileName.substring(pos + TIME_STAMP_TAG.length());
+            String ts = (new SimpleDateFormat(loggerConfig.getTimeStampFileName())).format(new Date());
+            finalFileName = finalFileName.substring(0, pos) + ts + finalFileName.substring(pos + TIME_STAMP_TAG.length());
         }
         File f = new File(finalFileName);
         finalFileName = f.getAbsolutePath();
@@ -73,7 +76,8 @@ public class SimpleLoggerImpl implements Logger {
         }
         if (logOutputStream != null) {
             try {
-                logOutputStream.write((loggerConfig.timeStampFormattedAsString() + ":" + message + NL).getBytes(Charset.defaultCharset()));
+                String ts = (new SimpleDateFormat(loggerConfig.getTimeStampLogLine())).format(new Date());
+                logOutputStream.write((ts + ":" + message + NL).getBytes(Charset.defaultCharset()));
             } catch (Exception io) {
                 System.err.println("Failed to write to log file:" + message + ":EX:" + io.getMessage());
             }

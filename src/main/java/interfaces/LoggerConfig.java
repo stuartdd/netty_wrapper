@@ -11,6 +11,8 @@ public interface LoggerConfig {
 
     boolean isEchoToConsole();
 
-    String timeStampFormattedAsString();
+    String getTimeStampFileName();
+
+    String getTimeStampLogLine();
 
 }
