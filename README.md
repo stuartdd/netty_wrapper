@@ -32,6 +32,8 @@ The server requires a Dispatcher, a configuration bean and an optional Logger. D
 The netty_wrapper is provided as a Gradle project.
 * Clone the project to Windows or Linux platforms. No advanced knowledge of gradle is required.
 
+```git clone https://github.com/stuartdd/netty_wrapper```
+
 * Build using the provided gradle build scripts. The resulting JAR is complete with ALL dependencies built in.
 * Create your project ad add the JAR as a dependency.
 # Examples
