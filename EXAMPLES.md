@@ -201,3 +201,73 @@ Examples are in the **server/src/main/java/examples**
 2018_04_08_14_36_25:   (13) RESP: application/json [{"action" : "Stopped"}]
 2018_04_08_14_36_25:SHUT DOWN 'Good bye' EXECUTED
 ```
+## Run the server in a thread
+Note ALL of the following code is from the TestTools class:
+```
+netty_wrapper/src/test/java/server/TestTools.java
+```
+
+Create the ServerThread class below and use the following code to start it.
+```java
+    serverThread = new ServerThread(dispatcher, nettyConfig, logger);
+    serverThread.start();
+    /*
+    Wait for it to stop starting!
+    */
+    while (serverThread.isStarting()) {
+        sleep(100);
+    }
+    /*
+    Give it some time to settle.
+    */
+    sleep(100);
+```
+
+Where sleep(n) is defined as follows
+
+```java
+    public static void sleep(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+```
+
+```java
+    public class ServerThread extends Thread {
+
+        private final Dispatcher dispatcher;
+        private final NettyConfigImpl nettyConfig;
+        private final Logger logger;
+        private boolean starting = true;
+
+        public ServerThread(Dispatcher dispatcher, NettyConfigImpl nettyConfig, Logger logger) {
+            this.dispatcher = dispatcher;
+            this.nettyConfig = nettyConfig;
+            this.logger = logger;
+        }
+
+        public boolean isStarting() {
+            return starting;
+        }
+
+        @Override
+        public void run() {
+            starting = false;
+            /**
+             * This method blocks does not return until the server stops.
+             * 
+             * This is why we need to run it in a thread. Otherwise we could not get any testing done!
+             */
+            HttpNettyServer.run(dispatcher, nettyConfig, logger);
+        }
+
+        public NettyConfigImpl getNettyConfig() {
+            return nettyConfig;
+        }
+    }
+
+```
