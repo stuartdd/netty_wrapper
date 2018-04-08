@@ -90,7 +90,7 @@ public class MinimalExampleWithLogger {
         System.out.println("From your browser http://localhost:8888/control/stop");
         System.out.println("From your browser http://localhost:8888/name/Fred");
         /*
-        Note the need to cast 
+        Note the need to cast because the LoggerConfig interface does not have getFinalLogName().
         */
         System.out.println("Log file will he here:"+((SimpleLoggerImpl)logger).getFinalLogName());
         /*
