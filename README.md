@@ -7,12 +7,14 @@ My target OS is Linux on a Raspberry PI. I needed a server to manage photos, a S
 
 I came across Netty in work while using MockServer for testing and found it more scalable than native Java servers but lighter weight than Apache. The result is this wrapper for Netty.
 
-The model I have created is a well known pattern. 
+The wrapper I have created uses a well known pattern. 
 
-Define and configure the server
-Define a route to a process, matching the http path elements.
-Write the processes.
+* Write minimal code to define and configure the server.
+* Define a route (or path) to a process matching the http path elements.
+* Write the processes.
 
-The poiler plate code should be minimal yet allow for flexiblity when defining the server properties for performance and configuration.
+When the path matches a route the processes is invoked with the required data objects populated.
 
-Interfaces are used to allow the developer to use their own substituted classes.
+The poiler plate code should be minimal yet allow for flexiblity when defining for performance and configuration.
+
+Interfaces are used to allow the developer to use their own substituted implementations of key classes.
