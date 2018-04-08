@@ -51,11 +51,19 @@ gradlew.bat clean fatjar
 The resulting JAR is **netty_wrapper/build/libs/serverJarWithDependencies-1.0.jar**
 
 ## Test
-Ther are test defined for the server. To run these 
+There are tests defined for the server. They test the netty-wrapper functionality. To run these 
 
 ```
 cd netty_wrapper
 ./gradlew clean test
+```
+
+## Deploy
+If you have a Maven repository used by Maven or Gradle projects you can deploy to it as follows
+
+```
+cd netty_wrapper
+./gradlew publish
 ```
 
 * Create your project and add the JAR as a dependency.
