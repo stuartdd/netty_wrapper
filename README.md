@@ -18,3 +18,20 @@ When the path matches a route the processes is invoked with the required data ob
 The poiler plate code should be minimal yet allow for flexiblity when defining for performance and configuration.
 
 Interfaces are used to allow the developer to use their own substituted implementations of key classes.
+## Configuration
+Java Beans are passed in to provide configuration data to the server and the logging system. Interfaces are used to define a minimum set of properties and sensible defaults are provided in the implementaton classes. The only required property is the port.
+## Routes
+These are used to provide a match on requets path. Wild cards and multiple elements are supported.
+## Dispatcher
+This provides the glue between the Netty server, the routes and the business logic (processes).
+## Logging
+A simple logger interface is provided (with it's own configuration bean). The developer can use the simple logger implementation provided or substitute their own as required.
+## Server
+The server requires a Dispatcher, a configuration bean and an optional Logger. Default implementations of these are provided.
+## Build
+The netty_wrapper is provided as a Gradle project.
+* Clone the project to Windows or Linux platforms
+** No advanced knowledge of gradle is required.
+* Build using the provided gradle build scripts.
+** The resulting JAR is complete with ALL dependencies built in.
+* Create your project ad add the JAR as a dependency.
