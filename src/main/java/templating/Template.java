@@ -18,11 +18,9 @@ import java.util.*;
 
 /**
  * This class manages Templates of any text file type.<br/>
- * It reads the template fragments via a URL which makes it easier to manage
- * HTML and web resources. <br/>
  * All substitution parameters are provided via a <b>java.util.Map</b> object.
  * The Map object is searched<br/>
- * for the parameter. The object returned us substituted via the getString()
+ * for the parameter. The object returned is substituted using the getString()
  * method.<br/>
  * <br/>
  * <h2>A complete example:</h2> For this example a template called file_005.txt
