@@ -5,6 +5,7 @@ import interfaces.Dispatcher;
 import interfaces.Logger;
 
 import junit.framework.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,6 +15,7 @@ import org.junit.Test;
  */
 public class ServerBaseTest {
 
+    private static final int EXPECTED_RETURN_CODE = 99;
     private static final int PORT = 8888;
     private static final int DELAY = 100;
     private static final String LOG[] = new String[]{
@@ -21,9 +23,9 @@ public class ServerBaseTest {
         "REQ : uri[/server/ping] method[GET]",
         "RESP: text/plain; charset=UTF-8 [PING]",
         "REQ : uri[/server/stop] method[GET]",
-        "Shutting down in " + DELAY + " Milliseconds. Reason: [Test Shutdown]",
+        "Shutting down in " + DELAY + " Milliseconds. Reason: [Test Shutdown] Return code: ["+EXPECTED_RETURN_CODE+"]",
         "RESP: text/plain; charset=UTF-8 [Shutdown request accepted]",
-        "SHUT DOWN 'Test Shutdown' EXECUTED"
+        "SHUT DOWN 'Test Shutdown' EXECUTED. RC: 99"
     };
 
     @Test
@@ -41,6 +43,11 @@ public class ServerBaseTest {
         TestTools.assertLoggerContains(LOG);
     }
 
+    @After
+    public void after() {
+        Assert.assertNull(TestTools.getError(), TestTools.getError());
+    }
+    
     @Before
     public void before() {
         /*
@@ -65,7 +72,7 @@ public class ServerBaseTest {
                 Shut the server down.
                 If you find the server shuts down befor the client has received the response you can increase DELAY.
                  */
-                HttpNettyServer.shutDown("Test Shutdown", DELAY);
+                HttpNettyServer.shutDown("Test Shutdown", DELAY, EXPECTED_RETURN_CODE);
                 /*
                 There is still time to respond.
                  */
@@ -79,7 +86,7 @@ public class ServerBaseTest {
                 response.append("PING");
             }
         });
-        TestTools.runServerThread(dispatcher, nettyConfig);
+        TestTools.runServerThread(dispatcher, nettyConfig, EXPECTED_RETURN_CODE);
     }
 
 }

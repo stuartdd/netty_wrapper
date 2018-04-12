@@ -57,12 +57,13 @@ public class HttpNettyServer {
     private static boolean shutDownDone = false;
     private static NettyConfig nettyConfig;
     private static Logger logger;
+    private static int returnCode = 0;
 
-    public static void run(Dispatcher dispatcher, NettyConfig nettyConfig) {
-        run(dispatcher, nettyConfig, null);
+    public static int run(Dispatcher dispatcher, NettyConfig nettyConfig) {
+        return run(dispatcher, nettyConfig, null);
     }
 
-    public static void run(Dispatcher dispatcher, NettyConfig someNettyConfig, Logger someLogger) {
+    public static int run(Dispatcher dispatcher, NettyConfig someNettyConfig, Logger someLogger) {
         if (dispatcher == null) {
             throw new ServerSetupException("Dispatcher cannot be null");
         }
@@ -77,7 +78,7 @@ public class HttpNettyServer {
              */
             throw new ServerSetupException("NettyConfig port has not been set");
         }
-        
+
         nettyConfig = someNettyConfig;
         logger = someLogger;
         /**
@@ -128,7 +129,7 @@ public class HttpNettyServer {
             sslCtx = null;
         }
 
-        Runtime.getRuntime().addShutdownHook(new ShutDownThread("Shut down Hook", logger, 100));
+        Runtime.getRuntime().addShutdownHook(new ShutDownThread("Shut down Hook", logger, 1, 100));
 
         // Configure the server.
         bossGroup = new NioEventLoopGroup(nettyConfig.getBossEventLoopThreads());
@@ -149,21 +150,31 @@ public class HttpNettyServer {
         } catch (InterruptedException ex) {
             throw new ServerSetupException("Failed to bind the server to the port", ex);
         } finally {
-            shutDown("Finally", 0);
+            shutDown("Finally", 0, 0);
         }
+        return returnCode;
     }
 
     /**
      * Stop the server
-     * @param desc A description for the logs. 
+     *
+     * @param desc A description for the logs.
      * @param delay Shut down after n milliseconds.
      */
-    public static void shutDown(String desc, long delay) {
+    public static void shutDown(String desc, long delay, int runReturnCode) {
         if (shutDownDone) {
             return;
         }
-        getLogger().log("Shutting down in "+delay+" Milliseconds. Reason: ["+desc+"]");
-        ShutDownThread shutDownByThread = new ShutDownThread(desc, getLogger(), delay);
+        
+        /**
+         * Only set the return code if it has not already been set!
+         */
+        if (returnCode == 0) {
+            returnCode = runReturnCode;
+        }
+        
+        getLogger().log("Shutting down in " + delay + " Milliseconds. Reason: [" + desc + "] Return code: [" + returnCode + "]");
+        ShutDownThread shutDownByThread = new ShutDownThread(desc, getLogger(), returnCode, delay);
         shutDownByThread.start();
     }
 
@@ -171,11 +182,13 @@ public class HttpNettyServer {
 
         private final Logger logger;
         private final String desc;
+        private final int runReturnCode;
         private final long delay;
 
-        public ShutDownThread(String desc, Logger logger, long delay) {
+        public ShutDownThread(String desc, Logger logger, int runReturnCode, long delay) {
             this.logger = logger;
             this.desc = desc;
+            this.runReturnCode = runReturnCode;
             this.delay = delay;
         }
 
@@ -186,19 +199,19 @@ public class HttpNettyServer {
             } catch (InterruptedException ex) {
 
             }
-            HttpNettyServer.shutDownByThread(desc, logger);
+            HttpNettyServer.shutDownByThread(desc, logger, runReturnCode);
         }
 
     }
 
-    private static void shutDownByThread(String desc, Logger logger) {
+    private static void shutDownByThread(String desc, Logger logger, int runReturnCode) {
         if (shutDownDone) {
             return;
         }
         shutDownDone = true;
         if (logger != null) {
-            logger.log("SHUT DOWN '" + desc + "' EXECUTED");
-        } 
+            logger.log("SHUT DOWN '" + desc + "' EXECUTED. RC: "+runReturnCode);
+        }
         bossGroup.shutdownGracefully();
         workerGroup.shutdownGracefully();
     }

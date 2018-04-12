@@ -107,11 +107,11 @@ public class HttpNettyResponse {
         setComplete();
     }
 
-    public void setError(HttpResponseStatus status, String bodyText) {
+    public void setError(HttpResponseStatus status, String text) {
         this.status = status;
         this.error = true;
         buffer.setLength(0);
-        buffer.append(bodyText);
+        buffer.append(text);
         complete = true;
     }
 

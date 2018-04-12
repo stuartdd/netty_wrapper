@@ -18,6 +18,7 @@ public class TestTools {
 
     private static Logger logger;
     private static ServerThread serverThread;
+    private static String error;
 
     public static Logger getLogger() {
         return logger;
@@ -26,61 +27,72 @@ public class TestTools {
     public static ServerThread getServerThread() {
         return serverThread;
     }
-    
+
+    public static String getError() {
+        return error;
+    }
+
+    public static void setError(String error) {
+        TestTools.error = error;
+    }
+
     public static void assertLoggerContains(String[] list) {
-        for (String s:list) {
+        for (String s : list) {
             if (!getLogger().toString().contains(s)) {
-                Assert.fail("Log ["+getLogger().toString()+"] does not contain ["+s+"]");
+                Assert.fail("Log [" + getLogger().toString() + "] does not contain [" + s + "]");
             }
         }
     }
 
     /**
      * Start the server in a thread.
-     * 
+     *
      * Creates a logger for you.
-     * 
+     *
      * @param dispatcher You need a Dispatcher
      * @param newNettyConfig You need a NettyConfig
      */
-    public static void runServerThread(Dispatcher dispatcher, NettyConfigImpl nettyConfig) {
+    public static void runServerThread(Dispatcher dispatcher, NettyConfigImpl nettyConfig, int expectedRunReturnCode) {
         /*
         Create the logger and keep it for later
-        */
+         */
         logger = createLogger();
         /*
         Create and start the server thread.
-        */
-        serverThread = new ServerThread(dispatcher, nettyConfig, logger);
+         */
+        serverThread = new ServerThread(dispatcher, nettyConfig, logger, expectedRunReturnCode);
         serverThread.start();
         /*
         Wait for it to stop starting!
-        */
+         */
         while (serverThread.isStarting()) {
             sleep(100);
         }
         /*
         Give it some time to settle.
-        */
+         */
         sleep(100);
     }
 
     /**
-     * Class that runs the server in a thread.
-     * You need a Dispatcher a NettyConfig and a Logger object to make it work.
-     * 
+     * Class that runs the server in a thread. You need a Dispatcher a
+     * NettyConfig and a Logger object to make it work.
+     *
      */
     public static class ServerThread extends Thread {
 
         private final Dispatcher dispatcher;
         private final NettyConfigImpl nettyConfig;
         private final Logger logger;
+        private int expectedRunReturnCode = 0;
         private boolean starting = true;
 
-        public ServerThread(Dispatcher dispatcher, NettyConfigImpl nettyConfig, Logger logger) {
+        public ServerThread(Dispatcher dispatcher, NettyConfigImpl nettyConfig, Logger logger, int expectedRunReturnCode) {
             this.dispatcher = dispatcher;
             this.nettyConfig = nettyConfig;
             this.logger = logger;
+            this.expectedRunReturnCode = expectedRunReturnCode;
+            TestTools.setError(null);
         }
 
         public boolean isStarting() {
@@ -92,10 +104,14 @@ public class TestTools {
             starting = false;
             /**
              * This method blocks does not return until the server stops.
-             * 
-             * This is why we need to run it in a thread. Otherwise we could not get any testing done!
+             *
+             * This is why we need to run it in a thread. Otherwise we could not
+             * get any testing done!
              */
-            HttpNettyServer.run(dispatcher, nettyConfig, logger);
+            int runReturnCode = HttpNettyServer.run(dispatcher, nettyConfig, logger);
+            if (runReturnCode != expectedRunReturnCode) {
+                TestTools.setError("Run Return Code is incorrect! expected[" + expectedRunReturnCode + "] actual [" + runReturnCode + "]");
+            }
         }
 
         public NettyConfigImpl getNettyConfig() {
@@ -105,6 +121,7 @@ public class TestTools {
 
     /**
      * Simply sleep for ms milliseconds
+     *
      * @param ms the milliseconds!
      */
     public static void sleep(long ms) {
@@ -117,6 +134,7 @@ public class TestTools {
 
     /**
      * Create a logger that holds on to the logged data so we can get it later!
+     *
      * @return A logger for testing.
      */
     private static Logger createLogger() {
@@ -147,6 +165,7 @@ public class TestTools {
 
     /**
      * Sent a http get request to the server
+     *
      * @param s The path that comes after the host.
      * @return The response from the server.
      */

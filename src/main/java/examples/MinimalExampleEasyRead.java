@@ -40,10 +40,11 @@ public class MinimalExampleEasyRead {
         
         Note as we do not pass in a Logger all output will go to the console.
          */
-        HttpNettyServer.run(dispatcher, nettyConfig);
+        int rc = HttpNettyServer.run(dispatcher, nettyConfig);
         /*
         Server has stopped
          */
+        System.exit(rc);
     }
 
     /**
@@ -60,9 +61,10 @@ public class MinimalExampleEasyRead {
                 This is the code executed for http://localhost:8888/control/stop
                 
                 Wait 100 milliseconds then shut the server down. The message 'Good bye' will appear in the logs.
+                The runReturnCode will be returned from the run method.
                 Note shutDown does not wait for server to shut down. It returns immediatly.
              */
-            HttpNettyServer.shutDown("Good bye", 100);
+            HttpNettyServer.shutDown("Good bye", 100, 0);
             /*
                 The respone should appear in the browser!
              */
