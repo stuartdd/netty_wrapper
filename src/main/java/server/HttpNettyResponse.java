@@ -12,20 +12,20 @@ import java.nio.file.Paths;
 import java.util.Map;
 import templating.Template;
 
-
 /**
- * Contains (almost) every thing you could possible need for your
- * handler to do it's job!
- * 
+ * Contains (almost) every thing you could possible need for your handler to do
+ * it's job!
+ *
  * In your handler you append the response text and return. The other parameters
  * can be left.
- * 
- * You may need to set the status and ContentType if the defaults are not applicable
- * 
+ *
+ * You may need to set the status and ContentType if the defaults are not
+ * applicable
+ *
  * See the examples in the test package
- * 
+ *
  * @author stuartdd
- * 
+ *
  */
 public class HttpNettyResponse {
 
@@ -44,6 +44,35 @@ public class HttpNettyResponse {
         setContentType("text/plain; charset=UTF-8");
     }
 
+    /**
+     * Load a file from a resource directory in a root path.
+     *
+     * The file is loaded and returned to the browser as a byte stream.
+     *
+     * This can be used to load binary media files as well as html, css, xml,
+     * json and any other file type.
+     *
+     * The Mimi Type for the file is defined by the file extension (.gif, .jpg
+     * etc) using the MimeTypes class.
+     *
+     * If the file is not found. The following message is returned to the browser. With a status of 404.
+     * 
+     * {"Status":404, "Msg":"Not Found", "Entity":"2018-04-12T12:12:42.589:Resource 'index.html' was not found"}
+     * 
+     * If the mime type cannot be derived an exception is thrown.
+     *
+     * If the mime type identifies the file as a text file (html, css, ,xml etc)
+     * then the parameters are used to update the file using the Template class.
+     *
+     * This enables you to tailor a static response with name value pairs.
+     *
+     * See the Template class for substitution details.
+     *
+     * @param root The root file system. For example /home/myserver
+     * @param resource The resource name. For example images, css, data
+     * @param file The file name. For example file.json, index.html, my.css, image.gif.
+     * @param parameters
+     */
     public void loadMedia(String root, String resource, String file, Map<String, String> parameters) {
         File f;
         if (resource == null) {
