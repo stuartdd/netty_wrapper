@@ -1,27 +1,27 @@
 # netty_wrapper
 Classes to simplify Netty Server creation and configuration.
 
-I found it very confusing to create and setup a Netty Server and as I have written many server systems over time I thought it needed a simplified interface model.
+I found it very confusing to create and setup and configure a Netty Server. I have written many server applications over time I thought it needed a simplified interface model.
 
-My target OS is Linux on a Raspberry PI. I needed a server to manage photos, a Samba file system with multiple users and a set of IOT nodes that act as a house alarm, heating management system media player etc. I initially tried GO which proved to be more than up to the task but as Java is my first language I found development much easier and much faster. 
+My target OS was Linux on a Raspberry PI. I needed a server to manage photos, a Samba file system with multiple users and a set of IOT nodes that act as a house alarm, heating management system media player etc. I initially used GO which proved to be more than up to the task but as Java is my first language I found development in Java easier and much faster. 
 
 I came across Netty in work while using MockServer for testing and found it more scalable than native Java servers but lighter weight than Apache. The result is this wrapper for Netty.
 
-The wrapper I have created uses a well known pattern. 
+The wrapper I have created uses a well known pattern - Less Boiler-Plate more Product!
 
 * Write minimal code to define and configure the server.
-* Define a route (or path) to a process matching the http path elements.
-* Write the processes.
+* Define a **route** (or **path**) to a **process** matching the http path elements.
+* Write the processes. This is where we need to concentrate our effort.
 
-When the path matches a route the processes is invoked with the required data objects populated.
+When the request **path** matches a **route** the **processes** is invoked with the required data objects populated.
 
-The poiler plate code should be minimal yet still allow for flexiblity when designing for performance and detailed configuration.
+Any Boiler-Plate should be minimal yet still allow for flexiblity when designing for performance and detailed configuration.
 
 Interfaces are used throughtout to allow the developer to use their own substituted implementations of key classes.
 ## Configuration
-Java Beans are passed in to provide configuration data to the Netty server and the Logging classes. Interfaces are used to define a minimum set of properties and sensible defaults are provided in the implementaton classes. The only required property for server configuration is the port, the rest can be left to their default values.
+Java Beans are passed in to provide configuration data to the Netty server and the Logging classes. Interfaces are used to define a minimum set of properties and sensible defaults are provided in the provided implementaton classes. The only required property for server configuration is the port, the rest can be left to default values.
 ## Routes
-These are used to provide a match on request paths. Wild cards and multiple elements are supported.
+The idea is to provide a route to a process. They are used to match a request paths. Wild cards and multiple elements are supported. Some examples follow:
 
 The path:```http://localhost:8888/a/b/c```
 Will match the route ```"a", "b" ,"c"```
