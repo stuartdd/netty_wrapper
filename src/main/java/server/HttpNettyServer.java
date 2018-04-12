@@ -37,7 +37,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
@@ -116,18 +115,18 @@ public class HttpNettyServer {
             }
         }
 
-        // Configure SSL.
         final SslContext sslCtx;
         if (nettyConfig.isSsl()) {
             try {
-                SelfSignedCertificate ssc = new SelfSignedCertificate();
-                sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
+            SelfSignedCertificate ssc = new SelfSignedCertificate();
+            sslCtx = SslContext.newServerContext(ssc.certificate(), ssc.privateKey());
             } catch (CertificateException | SSLException ex) {
                 throw new ServerSetupException("Failed to set up the SSL Context", ex);
             }
         } else {
             sslCtx = null;
         }
+
 
         Runtime.getRuntime().addShutdownHook(new ShutDownThread("Shut down Hook", logger, 1, 100));
 

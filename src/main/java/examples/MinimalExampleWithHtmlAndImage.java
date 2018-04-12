@@ -72,7 +72,7 @@ public class MinimalExampleWithHtmlAndImage {
                 /*
                 The respone should appear in the browser!
                  */
-                response.append("{\"action\" : \"Stopped\"}");
+                response.append("{\"action\" : \"Stopped\", \"msg\":\"Good Bye\"}");
                 /*
                 Tell the browser the response mime type is json ("application/json")
                  */

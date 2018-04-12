@@ -33,6 +33,7 @@ import interfaces.NettyConfig;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.DecoderResult;
@@ -41,10 +42,10 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderUtil;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.CharsetUtil;
@@ -56,7 +57,7 @@ import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.*;
 import java.io.IOException;
 
-public class HttpNettyServerHandler extends SimpleChannelInboundHandler<Object> implements Loggable {
+public class HttpNettyServerHandler extends ChannelHandlerAdapter implements Loggable {
 
     private static final String NL = System.getProperty("line.separator");
     private final Dispatcher dispatcher;
@@ -105,7 +106,7 @@ public class HttpNettyServerHandler extends SimpleChannelInboundHandler<Object> 
      * @param msg
      */
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Object msg) {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
         HttpNettyRequest nRequest = new HttpNettyRequest();
         HttpNettyResponse nResponse = new HttpNettyResponse();
 
@@ -113,18 +114,14 @@ public class HttpNettyServerHandler extends SimpleChannelInboundHandler<Object> 
 
             FullHttpRequest fullHttpRequest = (FullHttpRequest) msg;
 
-            if (HttpUtil.is100ContinueExpected(fullHttpRequest)) {
-                send100Continue(ctx);
-            }
-
             nResponse.clear();
             nRequest.setProtocolVersion(fullHttpRequest.protocolVersion().toString());
             nRequest.setUri(fullHttpRequest.uri());
-            nRequest.setMethod(fullHttpRequest.method().name());
+            nRequest.setMethod(fullHttpRequest.method().name().toString());
 
             HttpHeaders headers = fullHttpRequest.headers();
             if (!headers.isEmpty()) {
-                for (Map.Entry<String, String> h : headers) {
+                for (Entry<CharSequence, CharSequence> h : headers) {
                     CharSequence key = h.getKey();
                     CharSequence value = h.getValue();
                     nRequest.addHeader(key, value);
@@ -185,7 +182,7 @@ public class HttpNettyServerHandler extends SimpleChannelInboundHandler<Object> 
                     getLogger().log("   (" + Thread.currentThread().getId() + ") " + nResponse.toStringSmall());
                 }
             }
-            nResponse.setKeepAlive(HttpUtil.isKeepAlive(fullHttpRequest));
+            nResponse.setKeepAlive(HttpHeaderUtil.isKeepAlive(fullHttpRequest));
             writeResponse(fullHttpRequest, ctx, nResponse);
             if (!nResponse.isKeepAlive()) {
                 // If keep-alive is off, close the connection once the content is fully written.
@@ -235,7 +232,7 @@ public class HttpNettyServerHandler extends SimpleChannelInboundHandler<Object> 
                         Unpooled.copiedBuffer(localResponseData.getBuffer(), CharsetUtil.UTF_8));
             }
         }
-        for (Entry<String, String> s : localResponseData.getHeaders()) {
+        for (Entry<CharSequence, CharSequence> s : localResponseData.getHeaders()) {
             fullResponse.headers().set(s.getKey(), s.getValue());
         }
 
@@ -285,4 +282,5 @@ public class HttpNettyServerHandler extends SimpleChannelInboundHandler<Object> 
     public Logger getLogger() {
         return logger;
     }
+
 }

@@ -39,7 +39,7 @@ public class MinimalExample {
                 /*
                 The respone should appear in the browser!
                 */
-                response.append("BYE");
+                response.append("{\"msg\":\"Good Bye\"}");
             }
         });
         /*

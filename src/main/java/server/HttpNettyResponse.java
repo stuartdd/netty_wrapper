@@ -140,7 +140,7 @@ public class HttpNettyResponse {
     }
 
     public String getContentType() {
-        return headers.get(HttpHeaderNames.CONTENT_TYPE);
+        return headers.get(HttpHeaderNames.CONTENT_TYPE).toString();
     }
 
     public final void setContentType(String contentType) {

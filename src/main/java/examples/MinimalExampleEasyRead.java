@@ -27,7 +27,7 @@ public class MinimalExampleEasyRead {
         Dispatcher dispatcher = new DispatcherImpl();
         /*
         The handler is defined as a new class below 'StopHandler()'.
-        */
+         */
         dispatcher.addRoute(new String[]{"control", "stop"}, new StopHandler());
         /*
         Last chance to do any thing before the server starts
@@ -48,10 +48,11 @@ public class MinimalExampleEasyRead {
     }
 
     /**
-     * Implement HttpHandler so it must define 
-     *      handle(HttpNettyRequest request, HttpNettyResponse response, Logger logger)
-     * 
-     * This would normally be in a package called handlers but that is up to the developer
+     * Implement HttpHandler so it must define handle(HttpNettyRequest request,
+     * HttpNettyResponse response, Logger logger)
+     *
+     * This would normally be in a package called handlers but that is up to the
+     * developer
      */
     public static class StopHandler implements HttpHandler {
 
@@ -68,7 +69,7 @@ public class MinimalExampleEasyRead {
             /*
                 The respone should appear in the browser!
              */
-            response.append("BYE");
+            response.append("{\"msg\":\"Good Bye\"}");
         }
 
     }

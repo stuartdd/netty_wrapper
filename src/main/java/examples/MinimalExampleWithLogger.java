@@ -62,11 +62,7 @@ public class MinimalExampleWithLogger {
                 /*
                 The respone should appear in the browser!
                  */
-                response.append("{\"action\" : \"Stopped\"}");
-                /*
-                Tell the browser the response mime type is json ("application/json")
-                */
-                response.setContentType(MimeTypes.getMimeType(".json"));
+                response.append("{\"msg\":\"Good Bye\"}");
             }
         });
         /*
