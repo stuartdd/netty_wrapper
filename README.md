@@ -1,6 +1,8 @@
 # netty_wrapper
 Classes to simplify Netty Server creation and configuration.
 
+Please refer to http://netty.io/ for details of the netty server.
+
 I found it very confusing to create and setup and configure a Netty Server. I have written many server applications over time I thought it needed a simplified interface model.
 
 My target OS was Linux on a Raspberry PI. I needed a server to manage photos, a Samba file system with multiple users and a set of IOT nodes that act as a house alarm, heating management system media player etc. I initially used GO which proved to be more than up to the task but as Java is my first language I found development in Java easier and much faster. 
