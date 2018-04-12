@@ -72,6 +72,18 @@ This example shows what is returned when a media resource can not be found:
 A simple logger interface is provided (with it's own configuration bean). The developer can use the simple logger implementation provided or substitute their own as required.
 ## Server
 The server requires a Dispatcher, a configuration bean and an optional Logger. Default implementations of these are provided.
+## Stopping
+Stop the server using:
+
+```
+HttpNettyServer.shutDown("Good bye", 100, 0);
+```
+
+Provide a message for the logs and a period to wait before taking the action. This allows the server to respond to the browser after the shutdown has been requested.
+
+The last parameter is the value returned from the ```HttpNettyServer.run(dispatcher, nettyConfig);``` method and can be used to indicate why the server shut down. It also appears in the logs.
+
+See the examples for it's usage.
 ## Build
 The netty_wrapper is provided as a Gradle project.
 * Clone the project to Windows or Linux platforms. No advanced knowledge of gradle is required.
