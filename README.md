@@ -21,9 +21,53 @@ Interfaces are used throughtout to allow the developer to use their own substitu
 ## Configuration
 Java Beans are passed in to provide configuration data to the Netty server and the Logging classes. Interfaces are used to define a minimum set of properties and sensible defaults are provided in the implementaton classes. The only required property for server configuration is the port, the rest can be left to their default values.
 ## Routes
-These are used to provide a match on requets path. Wild cards and multiple elements are supported.
+These are used to provide a match on request paths. Wild cards and multiple elements are supported.
+
+The path:```http://localhost:8888/a/b/c```
+Will match the route ```"a", "b" ,"c"```
+
+The path:```http://localhost:8888/a/b/any```
+Will match the route ```"a", "b" ,"*"``` or any value in 'any'
+
+It will not match ```http://localhost:8888/a/b/any/d```
+
+The path:```http://localhost:8888/a/b/any/d```
+Will match the route ```"a", "b" ,"..."``` or any value or number of values after the /a/b/.
+
+For example it will match ```http://localhost:8888/a/b/any/d/e/f```
+
+The '*' means match any value at that position.
+
+The '...' means match an number of values at that position and the following positions. There is not point adding any thing after the '...'
+
+**Every route that is defined must have a matching handler**.
+## Handlers 
+These are hooked in to the server with the routes via the Dispatcher. When you define a route using the Dispatcher you define a handler. When the route matches the path elements the handler is called.
+
+A handler can be any class that implements **HttpHandler**. **HttpHandler** requires a single method to be implemented:
+
+```java
+void handle(HttpNettyRequest request, HttpNettyResponse response, Logger logger);
+```
+## Request and Response
+When a handler is called the request data is packaged in to a **HttpNettyRequest**. This provides easy access to the data in the request.
+
+When your logic in the handler completes it adds the response to the **HttpNettyResponse** and exits the handler method.
+## logger
+If no logger was provided for the server a default logger is created and passed to all handlers. The default logger will output to the console. 
+
+It is better to use the provided logger than System.out. If a different logger is used later the code would not be able to use it if it used System.out. The logger also timestamps each line of output. See Logging below.
+## Response Media
+The **HttpNettyResponse** class has a method that will load media (images, css, scripts, html etc) from a root web directory. There is a full example in **MinimalExampleWithHtmlAndImage**
 ## Dispatcher
 This provides the glue between the Netty server, the routes and the business logic (handlers).
+## Exceptions
+Default exception handling will catch exceptions thrown by the handlers. These are returned to the browser as follows:
+
+This example shows what is returned when a media resource can not be found:
+```json
+{"Status":404, "Msg":"Not Found", "Entity":"2018-04-12T15:50:51.142:Resource 'index.html' was not found"}
+```
 ## Logging
 A simple logger interface is provided (with it's own configuration bean). The developer can use the simple logger implementation provided or substitute their own as required.
 ## Server
