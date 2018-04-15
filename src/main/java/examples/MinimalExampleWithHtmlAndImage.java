@@ -68,7 +68,7 @@ public class MinimalExampleWithHtmlAndImage {
                 The runReturnCode will be returned from the run method.
                 Note shutDown does not wait for server to shut down. It returns immediatly.
                  */
-                HttpNettyServer.shutDown("Good bye", 100, 0);
+                HttpNettyServer.shutDown("Good bye", 100, 200);
                 /*
                 The respone should appear in the browser!
                  */

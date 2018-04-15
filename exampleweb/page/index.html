@@ -1,15 +1,26 @@
  <!DOCTYPE html>
 <html>
 <head>
+    <!-- This uses the rocket image for the page and shortcut image in your browser -->
+    <link rel="shortcut icon" href="/static/image/rocket.png" type="image/x-icon"></link>
+
+    <!-- rest.js contains the functions to send data to the server -->
     <script type="text/javascript" src="rest.js" ></script>
+
+    <!-- --------------------------------------------------------- -->
     <script type="text/javascript">
 		/*
-		The response is returned here. Parse the JSON, and just display the message.
+		The response is returned here. Parse the JSON, and display the data.
 		This all happens in the background.
 		*/
 	    function updateValue(response) {
             var data = JSON.parse(response);
 			document.getElementById('displayValue').innerHTML = data.message;
+			document.getElementById('displayCode').innerHTML = data.code;
+		}
+	    function serverStopped(response) {
+            var data = JSON.parse(response);
+			alert(data.msg);
 		}
 
 		/*
@@ -19,11 +30,17 @@
 	    function getDataFromTheServer(itemId) {
             serverGetData(updateValue, responseError, "data/id/"+itemId);
 		}		
+
+	    function stopTheServer(itemId) {
+            serverGetData(serverStopped, responseError, "control/stop");
+		}		
 	</script>
 </head>
 <body>
 <img src="/static/image/rocket.png" alt="Rocket" width="128" height="128"></br>
-<button onclick="getDataFromTheServer(12345678)">Get the data</button>
-<span id="displayValue" >Data not received!</span>
+<button onclick="getDataFromTheServer(12345678)">Get the Message and the code</button></br></br>
+<span id="displayValue" >Message not received!</span></br>
+<span id="displayCode" >Code not received!</span></br></br>
+<button onclick="stopTheServer()">Click here to stop the server</button></br>
 </body>
 </html> 

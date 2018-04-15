@@ -15,9 +15,17 @@ function createRequest() {
     return result;
 }
 
+/**
+Default behaviour for a server error.
+*/
 function responseError(message, code) {
-	console.log(message + " " + code);
-	alert("Status:" + code + ". Error:'" + message + "'");
+    if (message === "") {
+        console.log("Unknown message: Code:"+code);
+	    alert("Unknown message: Code:"+code);
+    } else {
+	    console.log("Messages:" + message + ". Code:" + code);
+	    alert("Code:" + code + ". Error:'" + message + "'");
+    }
 }
 
 /**
