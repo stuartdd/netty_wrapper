@@ -1,8 +1,29 @@
  <!DOCTYPE html>
 <html>
 <head>
+    <script type="text/javascript" src="rest.js" ></script>
+    <script type="text/javascript">
+		/*
+		The response is returned here. Parse the JSON, and just display the message.
+		This all happens in the background.
+		*/
+	    function updateValue(response) {
+            var data = JSON.parse(response);
+			document.getElementById('displayValue').innerHTML = data.message;
+		}
+
+		/*
+		Use rest.js library to send a request to the server and notify us (later) when the message is returned.
+		Don't forget that the returned data is not available until updateValue() is called. 
+		*/
+	    function getDataFromTheServer(itemId) {
+            serverGetData(updateValue, responseError, "data/id/"+itemId);
+		}		
+	</script>
 </head>
 <body>
-<img src="/static/image/rocket.png" alt="Rocket" width="128" height="128">
+<img src="/static/image/rocket.png" alt="Rocket" width="128" height="128"></br>
+<button onclick="getDataFromTheServer(12345678)">Get the data</button>
+<span id="displayValue" >Data not received!</span>
 </body>
 </html> 

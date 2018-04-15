@@ -99,11 +99,27 @@ public class MinimalExampleWithHtmlAndImage {
                 response.loadMedia(root, request.getPathSegments()[1], request.getPathSegments()[2], null);
             }
         });
+
+        dispatcher.addRoute(new String[]{"data", "id", "*"}, new HttpHandler() {
+            @Override
+            public void handle(HttpNettyRequest request, HttpNettyResponse response, Logger logger) {
+                /* 
+                There are several API's for parsing JSON and XML. 
+                I have not used them here to keep the app simple.
+                The best I have found so far is https://github.com/FasterXML/jackson which has loads of extra stuff.
+                 */
+                response.append("{\"code\":999, \"message\":\"" + request.getPathSegments()[2] + "\"}");
+                response.setContentType(MimeTypes.getMimeType(".json"));
+            }
+        });
+
         /*
         Last chance to do any thing before the server starts
          */
         System.out.println("From your browser http://localhost:8888/control/stop");
-        System.out.println("From your browser http://localhost:8888/static/page/index.html");
+        System.out.println("From your browser: Test the html load - http://localhost:8888/static/page/index.html");
+        System.out.println("From your browser: Test the data route - http://localhost:8888/data/id/abc123");
+
         /*
         Note the need to cast because the LoggerConfig interface does not have getFinalLogName().
          */
