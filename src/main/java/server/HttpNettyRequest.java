@@ -39,12 +39,13 @@ public class HttpNettyRequest {
     }
 
     public void setPath(String path) {
-        if (path.startsWith("/")) {
-            this.pathSegments = path.substring(1).split("/");
+        String encPath = DecodeEncode.decode(path);
+        if (encPath.startsWith("/")) {
+            this.pathSegments = encPath.substring(1).split("/");
         } else {
-            this.pathSegments = path.split("/");
+            this.pathSegments = encPath.split("/");
         }
-        this.path = path;
+        this.path = encPath;
     }
 
     public String[] getPathSegments() {
@@ -64,7 +65,7 @@ public class HttpNettyRequest {
     }
 
     public void setUri(String uri) {
-        this.uri = uri;
+        this.uri = DecodeEncode.decode(uri);
     }
 
     public String getProtocolVersion() {
